@@ -4,12 +4,17 @@ const downloadBtn = document.getElementById("download-btn")
 const previewBtn = document.getElementById("pdf-preview-btn")
 
 
-// Set max date = today
-const today = new Date().toISOString().split("T")[0];
-document.getElementById("invoice-date").setAttribute("max", today)
+// Fix for local timezone
+const today = new Date();
+today.setHours(0, 0, 0, 0); // reset to local midnight
+const yyyy = today.getFullYear();
+const mm = String(today.getMonth() + 1).padStart(2, "0");
+const dd = String(today.getDate()).padStart(2, "0");
 
-// Get device type
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+document.querySelector("input[type='date']").setAttribute("max", `${yyyy}-${mm}-${dd}`);
+
+
+
 
 
 // Add item button
@@ -137,8 +142,8 @@ previewBtn.addEventListener("click", () => {
   const invoiceData = collectInvoiceData();
   if (!invoiceData) return;
 
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  const doc = generatePDF(invoiceData);
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  const doc = generatePDF(invoiceData)
 
   if (isMobile) {
     // Open in new tab on mobile (better compatibility)
