@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="./src/output.css" rel="stylesheet">
+  <title>Invoice Generator</title>
+</head>
+<body class="bg-gray-50 text-gray-800">
+   <img id="company-logo" src="" style="display:none;">
+  <div class="min-h-screen min-w-[380px] p-4 md:p-8">
+    <h1 class="text-2xl md:text-3xl font-bold mb-6 text-center">Invoice Generator</h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      
+      <!-- Left: Invoice Form -->
+      <div class="bg-white p-4 md:p-6 rounded-2xl shadow">
+        <!-- Company Name -->
+       <div class="mb-6">
+            <label class="block text-sm font-semibold mb-2">Select Company</label>
+            <select id="company-select" class="block w-full text-sm border rounded p-2">
+                <option value="" disabled selected>-- Choose Company --</option>
+                <option value="fabtran">Fabtran</option>
+                <option value="fablot">Fablot</option>
+                <option value="gcf">GCF</option>
+            </select>
+        </div>
+<!-- npx tailwindcss -i ./src/input.css -o ./src/output.css --watch -->
+        <!-- Invoice Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label class="block text-sm font-semibold">Customer ID</label>
+            <input id="customer-id" type="text" class="w-full border rounded p-2" placeholder="K-001">
+          </div>
+          <div>
+            <label for="invoice-date" class="block text-sm font-semibold">Invoice Date</label>
+            <input id="invoice-date" max="" type="date" class="w-full border rounded p-2">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold">Terms</label>
+            <select id="terms" class="w-full border rounded p-2">
+              <option>Net 15 days</option>
+              <option>Net 30 days</option>
+              <option>Due on Receipt</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold">Invoice No.</label>
+            <input id="invoice-no" type="text" class="w-full border rounded p-2" placeholder="#1234">
+          </div>
+        </div>
+
+        <!-- Bill To -->
+          <div class="mb-6">
+            <label class="block text-sm font-semibold">Bill To</label>
+            <input id="bill-to" type="text" class="w-full border rounded p-2" placeholder="KM Homes">
+          </div>
+        <div class="mb-6">
+          <label class="block text-sm font-semibold">Address (Optional)</label>
+          <textarea id="customer-address" class="w-full border rounded p-2" rows="2" placeholder="Client Address"></textarea>
+        </div>
+
+        <!-- Items -->
+        <div class="mb-6">
+          <label class="block text-sm font-semibold">Items</label>
+          <div id="items-container" class="space-y-2">
+            <div class="grid grid-cols-5 gap-2 md:grid-cols-7 sm:grid-cols-6">
+              <input type="text" class="border rounded p-2 col-span-2 md:col-span-4 sm:col-span-3" placeholder="Description" required>
+              <input type="number" class="border rounded p-2" placeholder="Qty" required>
+              <input type="number" class="border rounded p-2" placeholder="Rate" required>
+              <button type="button" class="remove-item bg-red-500 text-white px-2 rounded cursor-pointer">Del</button>
+            </div>
+          </div>
+          <button type="button" id="add-item" class="mt-2 text-sm text-blue-600 cursor-pointer">+ Add Item</button>
+        </div>
+
+        <!-- Totals -->
+        <div class="mb-6 grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold">Freight</label>
+            <input id="freight" type="number" class="w-full border rounded p-2" placeholder="0.00">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold">Tax</label>
+            <input id="tax" type="number" class="w-full border rounded p-2" placeholder="0.00">
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex flex-wrap gap-2">
+          <button id="pdf-preview-btn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer">
+            Preview PDF
+          </button>
+          <button id="download-btn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 cursor-pointer">
+            Download PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: PDF Preview -->
+      <div class="bg-white p-2 md:p-4 rounded-2xl shadow">
+        <h2 class="text-lg font-semibold mb-2">Preview</h2>
+        <iframe id="pdf-preview" class="w-full h-[700px] border rounded"></iframe>
+      </div>
+    </div>
+  </div>
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.27/jspdf.plugin.autotable.min.js"></script>
+<script src="script.js" type="module"></script>
+
+</body>
+</html>
