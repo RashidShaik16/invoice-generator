@@ -8,6 +8,9 @@ const previewBtn = document.getElementById("pdf-preview-btn")
 const today = new Date().toISOString().split("T")[0];
 document.getElementById("invoice-date").setAttribute("max", today)
 
+// Get device type
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
 
 // Add item button
 document.getElementById("add-item").addEventListener("click", () => {
@@ -128,12 +131,23 @@ const totalNum = subTotalNum + freightNum + taxNum;
 }
 
 
+
 // Preview button
 previewBtn.addEventListener("click", () => {
   const invoiceData = collectInvoiceData();
   if (!invoiceData) return;
 
-  generatePDF(invoiceData); // This already updates the iframe preview
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const doc = generatePDF(invoiceData);
+
+  if (isMobile) {
+    // Open in new tab on mobile (better compatibility)
+    window.open(doc.output("bloburl"), "_blank");
+  } else {
+    // Inline preview on desktop
+    const pdfPreviewFrame = document.getElementById("pdf-preview");
+    pdfPreviewFrame.src = doc.output("bloburl");
+  }
 });
 
 // Download button
@@ -144,3 +158,4 @@ downloadBtn.addEventListener("click", () => {
   const doc = generatePDF(invoiceData);
   doc.save(`invoice-${invoiceData.invoiceNo || "draft"}.pdf`);
 });
+
