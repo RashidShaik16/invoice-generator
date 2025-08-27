@@ -137,21 +137,27 @@ const totalNum = subTotalNum + freightNum + taxNum;
 
 
 
+
+let lastUrl = null
+
 // Preview button
 previewBtn.addEventListener("click", () => {
   const invoiceData = collectInvoiceData();
   if (!invoiceData) return;
 
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-  const doc = generatePDF(invoiceData)
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const { doc, url } = generatePDF(invoiceData);
+
+  // Revoke old URL if one exists
+  if (lastUrl) URL.revokeObjectURL(lastUrl);
+  lastUrl = url;
 
   if (isMobile) {
-    // Open in new tab on mobile (better compatibility)
-    window.open(doc.output("bloburl"), "_blank");
+    window.open(url, "_blank");
   } else {
-    // Inline preview on desktop
-    const pdfPreviewFrame = document.getElementById("pdf-preview");
-    pdfPreviewFrame.src = doc.output("bloburl");
+    const iframe = document.getElementById("pdf-preview");
+    iframe.src = "about:blank";
+    setTimeout(() => { iframe.src = url; }, 50);
   }
 });
 
@@ -160,7 +166,26 @@ downloadBtn.addEventListener("click", () => {
   const invoiceData = collectInvoiceData();
   if (!invoiceData) return;
 
-  const doc = generatePDF(invoiceData);
-  doc.save(`invoice-${invoiceData.invoiceNo || "draft"}.pdf`);
+  const { doc, url } = generatePDF(invoiceData);
+
+  // Save PDF file
+  doc.save(`invoice-${invoiceData.billTo}-${invoiceData.invoiceNo}` || "Invoice.pdf");
+
+  
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  // Revoke old preview URL
+  if (lastUrl) URL.revokeObjectURL(lastUrl);
+  lastUrl = url;
+
+  if (isMobile) {
+    window.open(url, "_blank");
+  } else {
+    const iframe = document.getElementById("pdf-preview");
+    iframe.src = "about:blank";
+    setTimeout(() => { iframe.src = url; }, 50);
+  }
 });
+
+
 

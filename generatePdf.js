@@ -16,6 +16,13 @@ export function generatePDF(invoiceData) {
   companySelected === "fabtran" ? name = "Fabtran" : companySelected === "fablot" ? name = "Fablot" : name = "Gulf Coast Fabricators"
   companySelected === "fabtran" ? email = "mo@fabtran.com" : companySelected === "fablot" ? email = "mo@fablot.com" : email = "mo@gcfabco.com"
 
+  const formatCurrency = (num) => 
+  new Intl.NumberFormat("en-US", { 
+    minimumFractionDigits: 2, 
+    maximumFractionDigits: 2 
+  }).format(num)
+
+
   // logo
   const companyLogo = document.getElementById("company-logo").src = `${companySelected}.png`
   doc.addImage(companyLogo, "PNG", 15, 15, ...logoSize)
@@ -92,8 +99,8 @@ export function generatePDF(invoiceData) {
     body: items.map(item => [
       item.desc,
       item.qty,
-      `$${item.rate.toFixed(2)}`,
-      `$${(item.qty * item.rate).toFixed(2)}`
+      `$${formatCurrency(item.rate)}`,
+      `$${formatCurrency(item.qty * item.rate)}`
     ]),
     columnStyles: {
       0: { cellWidth: 100, halign: 'left' },
@@ -108,15 +115,15 @@ export function generatePDF(invoiceData) {
   });
 
   // Subtotal table
-  let finalY = doc.lastAutoTable.finalY + 5;
-  const tableX = 115;
-  const tableWidth = 80;
+  let finalY = doc.lastAutoTable.finalY + 5
+  const tableX = 115
+  const tableWidth = 80
   const totals = [
-    ["Subtotal", `$${subTotal}`],
-    ["Freight Charge", `$${freight}`],
-    ["Tax", `$${tax}`],
-    ["Total Due", `$${total}`]
-  ];
+    ["Subtotal", `$${formatCurrency(subTotal)}`],
+    ["Freight Charge", `$${formatCurrency(freight)}`],
+    ["Tax", `$${formatCurrency(tax)}`],
+    ["Total Due", `$${formatCurrency(total)}`]
+  ]
 
   // --- Horizontal separator line above subtotal ---
   const lineY = finalY - 3;
@@ -204,12 +211,12 @@ export function generatePDF(invoiceData) {
   // Preview
   const blob = doc.output("blob");
   const url = URL.createObjectURL(blob);
-  const iframe = document.getElementById("pdf-preview");
-  iframe.src = "about:blank";
-  setTimeout(() => { iframe.src = url; }, 50);
-  setTimeout(() => URL.revokeObjectURL(url), 10000)
+  // const iframe = document.getElementById("pdf-preview");
+  // iframe.src = "about:blank";
+  // setTimeout(() => { iframe.src = url; }, 50);
+  // setTimeout(() => URL.revokeObjectURL(url), 10000)
 
 
   // Return the doc object
-  return doc
+  return {doc, url}
 }
