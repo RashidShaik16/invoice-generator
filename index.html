@@ -51,9 +51,14 @@
         </div>
 
         <!-- Bill To -->
-          <div class="mb-6">
+          <select id="customers" class="w-full border rounded p-2 mb-6">
+              <option value = "">--Choose Client--</option>
+              <option value="KM Homes">KM Homes</option>
+              <option value="others">Others</option>
+            </select>
+          <div id="bill-to-manual" class="hidden mb-6">
             <label class="block text-sm font-semibold">Bill To</label>
-            <input id="bill-to" type="text" class="w-full border rounded p-2" placeholder="KM Homes">
+            <input id="bill-to" type="text" class="w-full border rounded p-2" placeholder="Enter Client Name">
           </div>
         <div class="mb-6">
           <label class="block text-sm font-semibold">Address (Optional)</label>
@@ -68,7 +73,7 @@
               <input type="text" class="border rounded p-2 col-span-2 md:col-span-4 sm:col-span-3" placeholder="Description" required>
               <input type="number" class="border rounded p-2" placeholder="Qty" required>
               <input type="number" class="border rounded p-2" placeholder="Rate" required>
-              <button type="button" class="remove-item bg-red-500 text-white px-2 rounded cursor-pointer">Del</button>
+              <button type="button" class="remove-item bg-red-700 text-white px-2 rounded cursor-pointer">Del</button>
             </div>
           </div>
           <button type="button" id="add-item" class="mt-2 text-sm text-blue-600 cursor-pointer">+ Add Item</button>

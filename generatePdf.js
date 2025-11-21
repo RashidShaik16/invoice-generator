@@ -2,7 +2,8 @@ export function generatePDF(invoiceData) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: "mm", format: "a4" })
 
-  const { companySelected, customerId, invoiceDate, terms, invoiceNo, billTo, customerAddress, items, freight, tax, subTotal, total } = invoiceData
+  const { companySelected, customerId, invoiceDate, terms, invoiceNo, billTo, customers, customerAddress, items, freight, tax, subTotal, total } = invoiceData
+
 
   let color = undefined
   let logoSize = undefined
@@ -39,7 +40,7 @@ export function generatePDF(invoiceData) {
 
   doc.setFontSize(12)
   doc.setTextColor(120)
-  doc.text(`#${invoiceNo}`, pageWidth-28, 31)
+  doc.text(`#${invoiceNo}`, pageWidth-35, 31)
 
   // from
   doc.setFontSize(10)
@@ -64,10 +65,11 @@ export function generatePDF(invoiceData) {
   doc.text("To:", 15, 72)
 
   // Customer name
+  const customerName = customers === "KM Homes" ? "KM Homes" : billTo
   doc.setTextColor(50)
   doc.setFont("helvetica", "bold")
   doc.setFontSize(12)
-  doc.text(billTo, 15, 79)
+  doc.text(customerName, 15, 79)
 
   // Customer address
   doc.setFontSize(10)

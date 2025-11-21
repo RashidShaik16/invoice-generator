@@ -2,6 +2,30 @@ import {generatePDF} from "./generatePdf.js"
 
 const downloadBtn = document.getElementById("download-btn")
 const previewBtn = document.getElementById("pdf-preview-btn")
+const customers = document.getElementById("customers")
+const billToManual = document.getElementById("bill-to-manual")
+const customerAddress = document.getElementById("customer-address")
+const billTo = document.getElementById("bill-to")
+
+
+const clientAddresses = [
+  {
+    client: "KM Homes",
+    address: `6225 Windward Pkwy,
+Alpharetta, GA 30005`
+  }
+]
+
+customers.addEventListener("change", function() {
+  if(customers.value === "others"){
+    billToManual.classList.remove("hidden")
+    customerAddress.value = ""
+  } else if(customers.value === "KM Homes") {
+    billTo.value = ""
+    billToManual.classList.add("hidden")
+    customerAddress.value = clientAddresses[0].address
+  }
+})
 
 
 // Fix for local timezone
@@ -39,7 +63,7 @@ document.getElementById("add-item").addEventListener("click", () => {
               <input type="text" class="border rounded p-2 col-span-2 md:col-span-4 sm:col-span-3" placeholder="Description" required>
               <input type="number" class="border rounded p-2" placeholder="Qty" required>
               <input type="number" class="border rounded p-2" placeholder="Rate" required>
-              <button type="button" class="remove-item bg-red-500 text-white px-2 rounded cursor-pointer">Del</button>
+              <button type="button" class="remove-item bg-red-700 text-white px-2 rounded cursor-pointer">Del</button>
   `;
 
   container.appendChild(row);
@@ -66,10 +90,12 @@ function collectInvoiceData() {
     const terms = document.getElementById("terms").value
     const invoiceNo = document.getElementById("invoice-no").value || "--"
     const billTo = document.getElementById("bill-to").value
+    const customers = document.getElementById("customers").value
     const customerAddress = document.getElementById("customer-address").value
     const freight = document.getElementById("freight").value
     const tax = document.getElementById("tax").value
 
+    
     // checks
       if (!companySelected) {
           alert("Please select a company before generating the invoice.");
@@ -81,8 +107,13 @@ function collectInvoiceData() {
         return
       } 
 
-      if(!billTo) {
-        alert("Please enter the customer to bill before generating the invoice.");
+      if(!billTo && !customers) {
+        alert("Please choose your client before generating the invoice.");
+        return
+      } 
+
+       if(!billTo && customers === "others") {
+        alert("Please enter the client name before generating the invoice.");
         return
       } 
 
@@ -123,6 +154,7 @@ const totalNum = subTotalNum + freightNum + taxNum;
     terms,
     invoiceNo,
     billTo,
+    customers,
     customerAddress,
     items,
     freight: freightNum.toFixed(2),
@@ -169,7 +201,8 @@ downloadBtn.addEventListener("click", () => {
   const { doc, url } = generatePDF(invoiceData);
 
   // Save PDF file
-  doc.save(`invoice-${invoiceData.billTo}-${invoiceData.invoiceNo}` || "Invoice.pdf");
+  const clientName = billTo.value === "" ? customers.value : billTo.value
+  doc.save(`invoice-${clientName}-${invoiceData.invoiceNo}` || "Invoice.pdf");
 
   
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
